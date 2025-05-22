@@ -5,6 +5,7 @@ import (
 
 	"encoding/json"
 	"img2color/img"
+	"img2color/middleware"
 	"img2color/util"
 	"log"
 	"net/http"
@@ -16,7 +17,8 @@ var allowedReferers []string
 
 func StartServer() {
 	allowedReferers = parseReferers(util.GetEnvDefault("ALLOWED_REFERERS", util.AllowReffers))
-	http.HandleFunc("/api", handler)
+	// 使用缓存中间件包装handler函数
+	http.HandleFunc("/api", middleware.CacheMiddleware(handler))
 	log.Println("服务器监听在: 8080...")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
@@ -80,6 +82,8 @@ func handleImageColor(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("提取主色调失败：%v", err), http.StatusInternalServerError)
 		return
 	}
+
+	log.Printf("%s提取主色调成功: %s\n", imgURL, color)
 
 	data := map[string]string{
 		"RGB": color,
