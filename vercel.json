@@ -2,7 +2,7 @@
     "routes": [
       {
         "src": "/api",
-        "dest": "/api/vercel.go"
+        "dest": "/api/server.go"
       }
     ]
   }
