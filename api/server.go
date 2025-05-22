@@ -15,23 +15,6 @@ import (
 
 var allowedReferers []string
 
-// -- only to vercel start --
-func init() {
-	allowedReferers = parseReferers(util.GetEnvDefault("ALLOWED_REFERERS", util.AllowReffers))
-}
-
-func main() {
-	// 使用缓存中间件包装handler函数
-	http.HandleFunc("/api", middleware.CacheMiddleware(handler))
-	log.Println("服务器监听在: 8080...")
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		log.Fatalf("启动服务器时出错：%v\n", err)
-	}
-}
-
-// -- only to vercel end --
-
 func StartServer() {
 	allowedReferers = parseReferers(util.GetEnvDefault("ALLOWED_REFERERS", util.AllowReffers))
 	// 使用缓存中间件包装handler函数
